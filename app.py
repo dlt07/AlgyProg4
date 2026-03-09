@@ -1,138 +1,65 @@
 class Nodo:
     def __init__(self, dato):
-        self.dato  = dato
-        self.siguiente = None
-        self.anterior = None
+        self.dato = dato
+        self.next = None
 
-
-class ListaDoble:
+class Pila:
     def __init__(self):
-        self.cabeza = None
-        self.cola = None
+        self.top = None
 
     def esta_vacia(self):
-        return self.cabeza is None
+        return self.top is None
     
-    def insertar_inicio(self, dato):
-        nuevo = Nodo(dato)
+    def push(self, dato):
+        new = Nodo(dato)
+        new.next = self.top
+        self.top = new
 
+    def pop(self):
         if self.esta_vacia():
-            self.cabeza = nuevo
-            self.cola = nuevo
-
-        else:
-            nuevo.siguiente = self.cabeza
-            self.cabeza.anterior = nuevo
-            self.cabeza = nuevo
-
-    def insertar_al_final(self, dato):
-        nuevo = Nodo(dato)
-
-        if self.esta_vacia():
-            self.cabeza = None
-            self.cola = None
-
-        else:
-            nuevo.cola.siguiente = nuevo
-            nuevo.anterior = self.cola
-            self.cola = nuevo
-
-
-    def eliminar_inicio(self):
-        if self.esta_vacia():
-            return None
-        
-        if self.cabeza.dato == self.cola.dato:
-            self.cabeza = None
-            self.cola = None
-        else:
-            self.cabeza = self.cabeza.siguiente
-            self.cabeza.anterior = None
-
-    def eliminar_al_final(self):
-        if self.esta_vacia():
-            return None
-        
-        if self.cabeza.dato == self.cola.dato:
-            self.cabeza = None
-            self.cola = None
-        else:
-            self.cola = self.cola.anterior
-            self.cola.siguiente = None
-
-    def recorrer_adelante(self):
-        if self.esta_vacia():
-            print("Lista Vacia")
-            return
-        
-        print("Recorriendo inicio --> Fin")
-        actual = self.cabeza
-        while actual:
-            print(actual.dato, end = " --> ")
-            actual = actual.siguiente
-        print("Fin")
-
-
-    def recorrer_atras(self):
-        if self.esta_vacia():
-            print("Lista Vacia")
-            return
-          
-        print("Recorriendo Fin --> Inicio")
-        actual = self.cola
-        while actual:
-            print(actual.dato, end ="-->")
-            actual = actual.anterior
-        print("Fin")
-
-    def buscar(self, dato):
-        actual = self.cabeza
-        while actual: 
-            if actual.dato == dato:
-                return True
-            actual = actual.siguiente
-
-        return False
+            raise Exception("Error: La pila está vacía")
+        dato = self.top.dato
+        self.top = self.top.next
+        return dato
     
+    def peek(self):
+        return None if self.esta_vacia() else self.top.dato
 
-    def __len__(self):  #Calcula la longitud de la lista
-        contador = 0
-        actual = self.cabeza
-        while actual:
-            contador += 1
-            actual = actual.siguiente
-        return contador
-    
-    def __str__(self): # 
-        if self.esta_vacia():
-            return "Lista Vacia"
-        
-        elementos = []
-        actual = self.cabeza
-        while actual:
-            elementos.append(str(actual.dato))
-            actual = actual.siguiente
-        return "<=>".join(elementos)
+    @staticmethod
+    def infija_a_postfija(expresion):
+        precedencia = {'+': 1, '-': 1, '*': 2, '/': 2}
+        salida = []
+        pila = Pila()
 
+        # IMPORTANTE: aquí NO quitamos espacios, porque vamos a usar split()
+        tokens = expresion.split()
 
-lista = ListaDoble()
-lista.insertar_al_final(10)
-lista.insertar_al_final(20)
-lista.insertar_al_final(30)
-print(lista)
+        for token in tokens:
+            if token.lstrip('-').replace('.', '', 1).isdigit():  # <- isdigit()
+                salida.append(token)
 
-lista.insertar_inicio(40)
-print(lista)
+            elif token == '(':
+                pila.push(token)
 
-lista.recorrer_adelante()
-lista.recorrer_atras()
+            elif token == ')':
+                while not pila.esta_vacia() and pila.peek() != '(':
+                    salida.append(pila.pop())
+                pila.pop()  # sacar '('
 
+            elif token in precedencia:
+                while (not pila.esta_vacia()
+                       and pila.peek() != '('
+                       and pila.peek() in precedencia
+                       and precedencia[pila.peek()] >= precedencia[token]):
+                    salida.append(pila.pop())
+                pila.push(token)
 
+        # Vaciar pila al final (FUERA del for)
+        while not pila.esta_vacia():
+            salida.append(pila.pop())
 
-        
-  
-  
-
+        return " ".join(salida)
 
 
-            
+# Llamada FUERA de la clase
+print(Pila.infija_a_postfija("3 + ( 5 * 2 )"))  
