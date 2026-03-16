@@ -1,138 +1,44 @@
-class Nodo:
-    def __init__(self, dato):
-        self.dato  = dato
-        self.siguiente = None
-        self.anterior = None
+import re
+
+def validar_celular(numero):
+    telefono_valido = re.match(r'^3\d{2}[-\s]?\d{3}[-\s]?\d{4}$', numero) #? Significa Opcional
+    return bool(telefono_valido)
 
 
-class ListaDoble:
-    def __init__(self):
-        self.cabeza = None
-        self.cola = None
+#print(validar_celular('3006771112'))
+#print(validar_celular('302 323 8831'))
+#print(validar_celular('300'))
+#print(validar_celular('300-56666-666'))
+#print(validar_celular('300-6666-777'))
+#print(validar_celular('300-677-1112'))
 
-    def esta_vacia(self):
-        return self.cabeza is None
+
+def validar_fecha(fecha):
+    fecha_valida = re.match(r'^(0[1-9]|[12]\d|3[01])[-/](0[1-9]|1[0-2])[-/](19|20)\d{2}$', fecha)
+    return bool(fecha_valida)
+#print(validar_fecha('30/05/2026'))
+
+'''''''''
+def validar_password(password):
+    if not re.match(r'^.{8.}',password):
+        return 'Debe tener minimo 8 caracteres'
+    if not re.match(r'.*[A-Z].*',password):
+        return 'Debe tener minimo una letra Mayuscula'
+    if not re.match(r'.*[a-z].*',password):
+        return 'Debe tener minimo una letra minuscula'
+    if not re.match(r'.*[0-9].*',password):
+        return 'Debe tener minimo un numero'
+'''''''''
+        
+def validar_password(password):
+    if len(password)<8:
+        return False, 'Minimo 8 caracteres'
+    if not re.search(r'[A-Z]',password):
+        return False, 'Falta una Mayuscula'
+    if not re.search(r'[a-z]',password):
+        return False, 'Falta una Mayuscula'
+    if not re.search(r'[#%&$]',password):
+        return False, 'Falta una Mayuscula'
     
-    def insertar_inicio(self, dato):
-        nuevo = Nodo(dato)
-
-        if self.esta_vacia():
-            self.cabeza = nuevo
-            self.cola = nuevo
-
-        else:
-            nuevo.siguiente = self.cabeza
-            self.cabeza.anterior = nuevo
-            self.cabeza = nuevo
-
-    def insertar_al_final(self, dato):
-        nuevo = Nodo(dato)
-
-        if self.esta_vacia():
-            self.cabeza = None
-            self.cola = None
-
-        else:
-            nuevo.cola.siguiente = nuevo
-            nuevo.anterior = self.cola
-            self.cola = nuevo
-
-
-    def eliminar_inicio(self):
-        if self.esta_vacia():
-            return None
-        
-        if self.cabeza.dato == self.cola.dato:
-            self.cabeza = None
-            self.cola = None
-        else:
-            self.cabeza = self.cabeza.siguiente
-            self.cabeza.anterior = None
-
-    def eliminar_al_final(self):
-        if self.esta_vacia():
-            return None
-        
-        if self.cabeza.dato == self.cola.dato:
-            self.cabeza = None
-            self.cola = None
-        else:
-            self.cola = self.cola.anterior
-            self.cola.siguiente = None
-
-    def recorrer_adelante(self):
-        if self.esta_vacia():
-            print("Lista Vacia")
-            return
-        
-        print("Recorriendo inicio --> Fin")
-        actual = self.cabeza
-        while actual:
-            print(actual.dato, end = " --> ")
-            actual = actual.siguiente
-        print("Fin")
-
-
-    def recorrer_atras(self):
-        if self.esta_vacia():
-            print("Lista Vacia")
-            return
-          
-        print("Recorriendo Fin --> Inicio")
-        actual = self.cola
-        while actual:
-            print(actual.dato, end ="-->")
-            actual = actual.anterior
-        print("Fin")
-
-    def buscar(self, dato):
-        actual = self.cabeza
-        while actual: 
-            if actual.dato == dato:
-                return True
-            actual = actual.siguiente
-
-        return False
-    
-
-    def __len__(self):  #Calcula la longitud de la lista
-        contador = 0
-        actual = self.cabeza
-        while actual:
-            contador += 1
-            actual = actual.siguiente
-        return contador
-    
-    def __str__(self): # 
-        if self.esta_vacia():
-            return "Lista Vacia"
-        
-        elementos = []
-        actual = self.cabeza
-        while actual:
-            elementos.append(str(actual.dato))
-            actual = actual.siguiente
-        return "<=>".join(elementos)
-
-
-lista = ListaDoble()
-lista.insertar_al_final(10)
-lista.insertar_al_final(20)
-lista.insertar_al_final(30)
-print(lista)
-
-lista.insertar_inicio(40)
-print(lista)
-
-lista.recorrer_adelante()
-lista.recorrer_atras()
-
-
-
-        
-  
-  
-
-
-
-            
+print(validar_password('128'))
+print(validar_password('HolA1234567'))
